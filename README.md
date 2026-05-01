@@ -1,16 +1,44 @@
-# React + Vite
+# AquaAI: Intelligent Water Management Ecosystem
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AquaAI is a futuristic, AI-powered water conservation and monitoring platform designed for households, residential societies, and commercial buildings. It provides a real-time command center for managing water consumption, detecting leaks, and optimizing distribution through an intelligent digital twin schematic.
 
-Currently, two official plugins are available:
+## 🚀 Core Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Live System Flow Schematic**: A real-time, animated 2D network diagram showing municipal supply, storage tanks, and consumption zones.
+- **IoT Data Ingestion Engine**: Simulated real-time telemetry stream capturing flow rate, line pressure, and tank levels.
+- **AI Neural Core**: Predictive analysis for consumption patterns and automated anomaly detection (leaks, pump failures).
+- **Simulation Sandbox**: Interactive testing environment for emergency protocols and system failure scenarios.
+- **Database Explorer**: Direct interface for monitoring historical sensor readings and system logs.
+- **Water Credit Marketplace**: A conceptual blockchain-integrated wallet for trading conserved water credits.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React 19, Vite, Lucide React (Icons), Recharts (Analytics)
+- **Styling**: Vanilla CSS (Eco-Tech Dark Theme)
+- **3D Engine**: (Planned/Prototyped) Three.js / React Three Fiber
+- **Architecture**: IoT-to-Cloud Neural Workflow
 
-## Expanding the ESLint configuration
+## 📋 Database Schema
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The project includes a comprehensive PostgreSQL schema (`database_schema.sql`) defining:
+- High-volume telemetry tables with optimized indexing.
+- Historical usage aggregation for long-term trends.
+- Automated alert logging and user preference management.
+
+## 🚦 Getting Started
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yashgalande39-cell/Aqua-AI-Water-Management.git
+   ```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+---
+*Built with ❤️ for a Sustainable Future.*
