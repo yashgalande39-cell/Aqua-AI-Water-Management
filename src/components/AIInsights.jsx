@@ -1,11 +1,67 @@
-import React, { useState } from 'react';
-import { Lightbulb, Settings, AlertTriangle, BatteryCharging, Power, Clock, Droplet, Activity, PowerOff, CloudRain, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Lightbulb, Settings, BatteryCharging, Power, Clock, Droplet, Activity, PowerOff, CloudRain, CheckCircle, Sun, Cloud, CloudLightning, Snowflake } from 'lucide-react';
 
 function AIInsights() {
   const [loading, setLoading] = useState(null);
   const [notified, setNotified] = useState(false);
   const [restricted, setRestricted] = useState(false);
   const [scheduled, setScheduled] = useState(true);
+
+  const [weather, setWeather] = useState({
+    temp: '...',
+    condition: 'Loading...',
+    details: 'Fetching real-time data...',
+    icon: CloudRain
+  });
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Pune coordinates
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.5204&longitude=73.8567&current=temperature_2m,weather_code&hourly=precipitation_probability&timezone=Asia%2FKolkata');
+        const data = await res.json();
+        
+        const temp = data.current.temperature_2m;
+        const code = data.current.weather_code;
+        
+        // Find max precipitation probability in the next 24 hours
+        const rainProb = Math.max(...data.hourly.precipitation_probability.slice(0, 24));
+        
+        let condition = 'Clear';
+        let WeatherIcon = Sun;
+        
+        if (code >= 1 && code <= 3) { condition = 'Cloudy'; WeatherIcon = Cloud; }
+        else if (code >= 45 && code <= 48) { condition = 'Foggy'; WeatherIcon = Cloud; }
+        else if (code >= 51 && code <= 67) { condition = 'Rainy'; WeatherIcon = CloudRain; }
+        else if (code >= 71 && code <= 86) { condition = 'Snow'; WeatherIcon = Snowflake; }
+        else if (code >= 95) { condition = 'Thunderstorm'; WeatherIcon = CloudLightning; }
+        else if (code === 0) { condition = 'Clear Sky'; WeatherIcon = Sun; }
+
+        let details = `${rainProb}% chance of rain`;
+        if (rainProb > 50) details = `Rain Expected (${rainProb}%)`;
+
+        setWeather({
+          temp: `${Math.round(temp)}°C`,
+          condition,
+          details,
+          icon: WeatherIcon
+        });
+      } catch (err) {
+        console.error("Failed to fetch weather", err);
+        setWeather({
+          temp: '--',
+          condition: 'Data Unavailable',
+          details: 'Check connection',
+          icon: CloudRain
+        });
+      }
+    };
+    
+    fetchWeather();
+    // Update every 30 minutes
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAction = (action, duration = 2000) => {
     setLoading(action);
@@ -193,14 +249,14 @@ function AIInsights() {
 
           <div className="weather-widget">
             <div className="flex-between mb-3">
-              <h3 style={{ color: 'white' }}>Hyper-Local Weather</h3>
-              <CloudRain className="text-primary" />
+              <h3 style={{ color: 'white' }}>Pune Weather (Live)</h3>
+              <weather.icon className="text-primary" />
             </div>
             <div className="flex-center gap-4">
-              <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>24°C</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>{weather.temp}</div>
               <div>
-                <div style={{ fontWeight: 'bold' }}>Rain Predicted</div>
-                <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>Expected in 14h</div>
+                <div style={{ fontWeight: 'bold' }}>{weather.condition}</div>
+                <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{weather.details}</div>
               </div>
             </div>
             <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.2)' }}>
@@ -210,7 +266,9 @@ function AIInsights() {
               </div>
               <div className="flex-between" style={{ fontSize: '0.8rem' }}>
                 <span>Irrigation Status</span>
-                <span className="text-warning">PAUSED (Rain Delay)</span>
+                <span className={weather.condition === 'Rainy' || weather.condition === 'Thunderstorm' ? 'text-warning' : 'text-success'}>
+                  {weather.condition === 'Rainy' || weather.condition === 'Thunderstorm' ? 'PAUSED (Rain Delay)' : 'ACTIVE (Scheduled)'}
+                </span>
               </div>
             </div>
           </div>

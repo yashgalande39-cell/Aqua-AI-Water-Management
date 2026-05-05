@@ -1,5 +1,5 @@
-import React from 'react';
-import { Cloud, Database, Wifi, Smartphone, Monitor, Server, Lock, Cpu, ArrowRight, Zap, RefreshCw, BarChart3, Activity } from 'lucide-react';
+import { Fragment } from 'react';
+import { Database, Wifi, Monitor, Server, Lock, Cpu, ArrowRight, Zap, RefreshCw, BarChart3, Activity } from 'lucide-react';
 
 function Architecture() {
   return (
@@ -13,7 +13,7 @@ function Architecture() {
           { step: 2, label: 'Cloud Intelligence', icon: <Server size={18} /> },
           { step: 3, label: 'Real-time Action', icon: <Zap size={18} /> }
         ].map((item, idx) => (
-          <React.Fragment key={item.step}>
+          <Fragment key={item.step}>
             <div className="flex-center gap-3">
               <div style={{ 
                 width: '40px', height: '40px', borderRadius: '50%', 
@@ -29,7 +29,7 @@ function Architecture() {
               </div>
             </div>
             {idx < 2 && <ArrowRight className="text-slate" size={24} style={{ opacity: 0.3 }} />}
-          </React.Fragment>
+          </Fragment>
         ))}
       </div>
 

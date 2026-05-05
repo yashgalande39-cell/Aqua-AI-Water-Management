@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Wallet, ArrowUpRight, ArrowDownLeft, Landmark, History, TrendingUp, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Wallet, ArrowUpRight, ArrowDownLeft, Landmark, History, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const marketData = [

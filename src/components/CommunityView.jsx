@@ -1,4 +1,3 @@
-import React from 'react';
 import { Trophy, Award, Star, Users, Leaf, ThumbsUp } from 'lucide-react';
 
 function CommunityView() {

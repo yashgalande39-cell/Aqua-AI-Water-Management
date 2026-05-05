@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MessageSquare, Send, X, Bot, User, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { MessageSquare, Send, X, Bot, Sparkles } from 'lucide-react';
 
 function AquaGPT() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,20 +32,30 @@ function AquaGPT() {
 
   return (
     <>
-      <div className="assistant-bubble" onClick={() => setIsOpen(!isOpen)}>
+      <button
+        type="button"
+        className="assistant-bubble"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? 'Close AquaGPT assistant' : 'Open AquaGPT assistant'}
+      >
         {isOpen ? <X size={28} /> : <MessageSquare size={28} />}
         {!isOpen && (
           <div style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--red-alert)', width: '20px', height: '20px', borderRadius: '50%', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifycenter: 'center', border: '2px solid var(--mid-blue)' }}>
             1
           </div>
         )}
-      </div>
+      </button>
 
       {isOpen && (
         <div className="assistant-panel" style={{ animation: 'fadeIn 0.3s ease-out' }}>
           <div className="card-header bg-primary" style={{ margin: 0, padding: '1rem', borderRadius: 0 }}>
             <div className="card-title"><Bot size={20} className="text-primary" /> AquaGPT <Sparkles size={14} className="text-warning" /></div>
-            <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--slate)', cursor: 'pointer' }}>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              style={{ background: 'none', border: 'none', color: 'var(--slate)', cursor: 'pointer' }}
+              aria-label="Close AquaGPT panel"
+            >
               <X size={20} />
             </button>
           </div>
@@ -67,7 +77,7 @@ function AquaGPT() {
               placeholder="Ask me anything..." 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             />
             <button className="tab active" style={{ padding: '0.5rem' }} onClick={handleSend}>
               <Send size={18} />

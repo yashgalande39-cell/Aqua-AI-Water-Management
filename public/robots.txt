@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aquaai.example.com/sitemap.xml

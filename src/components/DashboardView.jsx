@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Droplets, TrendingDown, TrendingUp, AlertCircle, Activity } from 'lucide-react';
+import { Droplets, TrendingDown, TrendingUp, AlertCircle, Activity, Radar, PlusCircle, Cpu } from 'lucide-react';
 import { useIoT } from '../context/IoTContext';
+import { useNotification } from '../context/NotificationContext';
 
 const consumptionData = [
   { time: '00:00', usage: 120, predicted: 110 },
@@ -22,7 +23,42 @@ const buildingData = [
 
 function DashboardView() {
   const { data } = useIoT();
+  const { showNotification } = useNotification();
   const [activePortal, setActivePortal] = useState('Society Management');
+  const [sensorName, setSensorName] = useState('');
+  const [sensorZone, setSensorZone] = useState('Block A');
+  const [sensorType, setSensorType] = useState('Flow');
+  const [sensors, setSensors] = useState([
+    { id: 'SNS-101', name: 'Main Riser Meter', zone: 'Block A', type: 'Flow', health: 99 },
+    { id: 'SNS-102', name: 'Pressure Gate North', zone: 'Block B', type: 'Pressure', health: 97 },
+    { id: 'SNS-103', name: 'Leak Acoustic Unit', zone: 'Commercial', type: 'Leak', health: 96 },
+  ]);
+
+  const detectionAccuracy = Math.min(99.9, 92 + sensors.length * 1.2).toFixed(1);
+
+  const handleAddSensor = (event) => {
+    event.preventDefault();
+    const trimmedName = sensorName.trim();
+
+    if (!trimmedName) {
+      showNotification('Please enter a sensor name before adding.', 'warning');
+      return;
+    }
+
+    const sensorId = `SNS-${100 + sensors.length + 1}`;
+    setSensors((prev) => [
+      {
+        id: sensorId,
+        name: trimmedName,
+        zone: sensorZone,
+        type: sensorType,
+        health: 95 + Math.floor(Math.random() * 5),
+      },
+      ...prev,
+    ]);
+    setSensorName('');
+    showNotification(`${sensorId} added to ${sensorZone} for real-time detection.`, 'success');
+  };
 
   return (
     <div className="view-container">
@@ -130,6 +166,82 @@ function DashboardView() {
                 <Bar dataKey="capacity" name="Daily Quota" fill="rgba(255,255,255,0.1)" radius={[0, 4, 4, 0]} barSize={20} />
               </BarChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      <div className="sensor-section card mt-4">
+        <div className="card-header">
+          <div className="card-title">
+            <Radar size={20} className="text-primary" /> Real-Time Sensor Expansion
+          </div>
+          <div className="sensor-metric">
+            <Cpu size={16} />
+            Detection Accuracy: {detectionAccuracy}%
+          </div>
+        </div>
+
+        <div className="sensor-grid">
+          <form className="sensor-form" onSubmit={handleAddSensor}>
+            <h3>Add New Sensor Node</h3>
+            <p className="mb-3">Deploy more edge sensors to improve anomaly detection precision in live telemetry streams.</p>
+
+            <label htmlFor="sensor-name">Sensor Name</label>
+            <input
+              id="sensor-name"
+              className="sensor-input"
+              value={sensorName}
+              onChange={(event) => setSensorName(event.target.value)}
+              placeholder="e.g. Basement Leak Sonar"
+            />
+
+            <label htmlFor="sensor-zone">Zone</label>
+            <select
+              id="sensor-zone"
+              className="sensor-input"
+              value={sensorZone}
+              onChange={(event) => setSensorZone(event.target.value)}
+            >
+              {['Block A', 'Block B', 'Block C', 'Commercial', 'Hospital'].map((zone) => (
+                <option key={zone} value={zone}>{zone}</option>
+              ))}
+            </select>
+
+            <label htmlFor="sensor-type">Sensor Type</label>
+            <select
+              id="sensor-type"
+              className="sensor-input"
+              value={sensorType}
+              onChange={(event) => setSensorType(event.target.value)}
+            >
+              {['Flow', 'Pressure', 'Leak', 'Quality'].map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+
+            <button type="submit" className="tab active flex-center gap-2 mt-3">
+              <PlusCircle size={16} /> Add Sensor
+            </button>
+          </form>
+
+          <div>
+            <h3 className="mb-3">Active Sensor Fleet ({sensors.length})</h3>
+            <div className="sensor-list">
+              {sensors.map((sensor) => (
+                <div key={sensor.id} className="sensor-item">
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{sensor.name}</div>
+                    <div className="text-slate" style={{ fontSize: '0.8rem' }}>
+                      {sensor.id} • {sensor.zone} • {sensor.type}
+                    </div>
+                  </div>
+                  <div className="sensor-health">Health {sensor.health}%</div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-slate" style={{ fontSize: '0.8rem' }}>
+              Last model sync: {data.lastSync} • Each newly added sensor increases the live detection confidence score.
+            </p>
           </div>
         </div>
       </div>

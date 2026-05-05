@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ShieldAlert, Zap, Droplets, Building2, Hospital, Trees, ShoppingBag, Clock, AlertTriangle } from 'lucide-react';
 
 function SecurityView() {

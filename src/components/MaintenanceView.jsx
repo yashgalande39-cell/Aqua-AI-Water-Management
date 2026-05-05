@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Wrench, AlertCircle, CheckCircle, Clock, User, Phone, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { AlertCircle, CheckCircle, Clock, User, MapPin } from 'lucide-react';
+import { useNotification } from '../context/NotificationContext';
 
 function MaintenanceView() {
+  const { showNotification } = useNotification();
   const [tickets, setTickets] = useState([
     { id: 'TK-842', type: 'Predictive', issue: 'Pressure Flux - Main Riser', priority: 'High', status: 'Active', tech: 'John Doe', time: '15m ago' },
     { id: 'TK-840', type: 'Leak', issue: 'Secondary Valve Leak', priority: 'Medium', status: 'Pending', tech: 'Unassigned', time: '2h ago' },
@@ -98,7 +100,13 @@ function MaintenanceView() {
               </div>
             ))}
           </div>
-          <button className="tab w-100 mt-4" style={{ width: '100%' }} onClick={() => alert('Accessing personnel directory...')}>View All Personnel</button>
+          <button
+            className="tab w-100 mt-4"
+            style={{ width: '100%' }}
+            onClick={() => showNotification('Accessing personnel directory...', 'info')}
+          >
+            View All Personnel
+          </button>
         </div>
       </div>
     </div>

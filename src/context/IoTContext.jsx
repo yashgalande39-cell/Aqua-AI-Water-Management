@@ -1,8 +1,23 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-const IoTContext = createContext();
+const TelemetryContext = createContext(null);
+const SimulationContext = createContext(null);
+const HistoryContext = createContext([]);
 
-export const useIoT = () => useContext(IoTContext);
+export const useIoT = () => {
+  const telemetry = useContext(TelemetryContext);
+  const simulation = useContext(SimulationContext);
+  const history = useContext(HistoryContext);
+
+  return {
+    ...simulation,
+    data: telemetry,
+    history,
+  };
+};
+export const useTelemetryData = () => useContext(TelemetryContext);
+export const useTelemetryHistory = () => useContext(HistoryContext);
+export const useSimulationState = () => useContext(SimulationContext);
 
 export const IoTProvider = ({ children }) => {
   const [data, setData] = useState({
@@ -60,9 +75,18 @@ export const IoTProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [simActive]);
 
+  const simulationValue = useMemo(
+    () => ({ setData, simActive, setSimActive }),
+    [simActive],
+  );
+
   return (
-    <IoTContext.Provider value={{ data, setData, simActive, setSimActive, history }}>
-      {children}
-    </IoTContext.Provider>
+    <SimulationContext.Provider value={simulationValue}>
+      <TelemetryContext.Provider value={data}>
+        <HistoryContext.Provider value={history}>
+          {children}
+        </HistoryContext.Provider>
+      </TelemetryContext.Provider>
+    </SimulationContext.Provider>
   );
 };
